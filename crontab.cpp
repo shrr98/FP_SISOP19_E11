@@ -13,40 +13,45 @@
 char dir[] = "/home/trash/sisop/fp/FP_Sisop_E11/";
 int resetFlag;
 
-void resetAll(std::vector<int> prosesList){
+void resetAll(){
+
+}
+
+void startSchedule(){
+
+}
+
+int modifiedChecker(){
+    FILE *pipe;
+    char command[] = "find . -name \"crontab.data\" -cmin 0.66";    // check wherher crontab.data has been modifiend for last 1 second (approx 0.66 minutes)
+    char buffer[64]; 
+    memset(buffer, 0, sizeof(buffer));
+    pipe = popen(command, "r");
+    fread(buffer, sizeof(buffer), 1, pipe);
+    if (buffer[0]!=0){
+        resetFlag = 1;
+        return 1;
+    }
+    return 0;
 }
 
 void *checkData(void *arg){
-    FILE *pipe;
-    char command[] = "find . -name \"crontab.data\" -cmin 0.66";    // check wherher crontab.data has been modifiend for last 1 second (approx 0.66 minutes)
-    char buffer[64];
+    
     while(1){
-        memset(buffer, 0, sizeof(buffer));
-        pipe = popen(command, "r");
-        fread(buffer, sizeof(buffer), 1, pipe);
-        if (buffer[0]!=0){
-            resetFlag = 1;
-        }
+       if(modifiedChecker()){
+           resetAll();
+           startSchedule();
+       }
         sleep(1);
     }
 }
 
-std::vector<int> forking(){
-    FILE *dataFile = fopen("crontab.data", "r");
-    char buffer[512];
-    while(fgets(buffer,512, dataFile)!=NULL){
-        
-    }
-}
+void* runSchedule(void *arg){       // argument passed here is a line in crontab.data
+    int min, hour, daym, month, dayw;
+    char program_path[512];
+    char *line = (char*) arg;
+    sprintf(line, "%d %d %d %d %d %s", &min, &hour, &daym, &month, &dayw, program_path);
 
-void *runPrograms(void *arg){
-    std::vector<int> prosesList;
-    prosesList = forking();
-    while(1){
-        if(!resetFlag){
-            resetAll(prosesList);
-        }
-    }
 }
 
 int main(int argc, char **argv){
@@ -79,6 +84,5 @@ int main(int argc, char **argv){
     pthread_t th[2];
     int err;
     err = pthread_create(&th[0],NULL,&checkData,NULL);
-    err = pthread_create(&th[1], NULL, &runPrograms, NULL);
     return 0;
 }
