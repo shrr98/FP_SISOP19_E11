@@ -1,0 +1,11 @@
+Daemon :
+2 Thread :
+    1. Thread untuk ngecek modifikasi file crontab.data
+        Fungsi-fungsi :
+            1. modifiedChecker : ngecek udah dimodif dalam waktu 1 detik terakhir/nggak
+            2. resetAll : matiin semua thread untuk program
+            3. startSchedule : mulai ulang semua schedule berdasarkan file crontab
+    2. Thread untuk masing masing program yang harus dijalankan
+        Handler functionnya:
+            1. runSchedule(format_time_kayak_crontab, path_ke_program_yang_mau_diexecute)
+                ngebaca format_time nya dulu, looping, difork, yang parent buat timer, yang child buat jalanin program (atau kebalikannya ntar lihat dulu wkwk).
