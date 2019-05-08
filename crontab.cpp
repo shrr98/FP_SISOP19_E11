@@ -1,20 +1,11 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <unistd.h>
-#include <syslog.h>
-#include <pthread.h>
-#include <vector>
-#include <string.h>
-
-char dir[] = "/home/trash/sisop/fp/FP_Sisop_E11/";
-int resetFlag;
+#include "crontab.h"
 
 void resetAll(){
-
+    resetFlag = 1;                                              // enable resetFlag so that the scheduling threads can be terminated
+    for(int i=0; prosesThreads[i]!=NULLTHREAD; i++){
+        pthread_join(prosesThreads[i], NULL);                   // waiting for all threads' termination
+        prosesThreads[i] = NULLTHREAD;
+    }
 }
 
 void startSchedule(){
@@ -29,14 +20,12 @@ int modifiedChecker(){
     pipe = popen(command, "r");
     fread(buffer, sizeof(buffer), 1, pipe);
     if (buffer[0]!=0){
-        resetFlag = 1;
         return 1;
     }
     return 0;
 }
 
-void *checkData(void *arg){
-    
+void runCrontab(){
     while(1){
        if(modifiedChecker()){
            resetAll();
@@ -46,13 +35,6 @@ void *checkData(void *arg){
     }
 }
 
-void* runSchedule(void *arg){       // argument passed here is a line in crontab.data
-    int min, hour, daym, month, dayw;
-    char program_path[512];
-    char *line = (char*) arg;
-    sprintf(line, "%d %d %d %d %d %s", &min, &hour, &daym, &month, &dayw, program_path);
-
-}
 
 int main(int argc, char **argv){
     pid_t child_id;
@@ -81,8 +63,6 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
     
-    pthread_t th[2];
-    int err;
-    err = pthread_create(&th[0],NULL,&checkData,NULL);
+    runCrontab();
     return 0;
 }
