@@ -1,5 +1,16 @@
 #include "crontab.h"
 
+void timer(int sec){
+    printf("%d sekon\n", sec);
+    clock_t start = clock();
+    int runtime = 0;
+    while(!resetFlag && runtime < sec){
+        runtime = (clock() - start) / CLOCKS_PER_SEC;
+    }
+    printf("ngesleep : %d\n", runtime);
+    return;
+}
+
 void* runSchedule(void *arg){       // argument passed here is a line in crontab.data
     pthread_mutex_lock(&mutex1);
     int min, hour, daym, month, dayw;
@@ -21,7 +32,7 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
 
     // printf("%s\n line : %d %d %d %d %d %s\n", line, min, hour, daym, dayw, month, program_path);
     while(!resetFlag){
-        printf("--- masuk while runschedule\n");
+        printf("--- masuk while runschedule %s\n" , program_path);
         isTheTime = false;
         // cek dulu tapi masih magerr
         now = localtime(0);
@@ -36,34 +47,30 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
                 }
             }
         }
-        printf("aman\n");
-        pid_t proses = fork();
-        printf("proses : %d\n", proses);
-        if(proses==0){
-            if(!isTheTime){
-                    sleep(60);
-            }
-            if(isTheTime){
-                // forking, terus jalanin program di child
-                // sleep di parent nya
-                pid_t prosesScript = fork();
-
-                if(prosesScript == 0){  // child
-                    printf("child : %s\n", program_path);
-                    char *args[] = {"bash", program_path, NULL};
-                    execv("/bin/bash", args);
-                }
-                else if(prosesScript > 0){ 
-                    int status=0;
-                    printf("parent preparing to sleep\n");
-                    sleep(60);
-                    printf("after sleeping\n");
-                }
-            }
-        }
-        else if(proses>0){
+        // pid_t proses = fork();
+        // printf("proses : %d\n", proses);
+        // if(proses==0){
+        //     if(!isTheTime){
+        //             return 0;
+        //     }
+        //     else{
+        //             printf("child : %s\n", program_path);
+        //             char *args[] = {"bash", program_path, NULL};
+        //             execv("/bin/bash", args);
+        //     }
+        // }
+        // if(proses>0){
+            // pthread_mutex_lock(&mutex1);
+            // if(isTheTime)
+            //     system(program_path);
+                
+            // pthread_mutex_unlock(&mutex1);
+            printf("masuk parent process\n");
             int statp = 0;
             while(wait(&statp) > 0);
-        }
+            timer(60);
+            printf("--------childs mati kabeh\n");
+        // }
     }
+    return NULL;
 }
