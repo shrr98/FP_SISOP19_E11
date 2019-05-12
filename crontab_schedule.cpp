@@ -38,6 +38,7 @@ void* runAJob(void *arg){
 void* runSchedule(void *arg){       // argument passed here is a line in crontab.data
     while(true){
         printf("---masuk while runSchedule\n");
+        while(resetFlag);
         pthread_t thread[numJobs];
         int indlist[numJobs];
         for(int index=0; index<numJobs; index++){

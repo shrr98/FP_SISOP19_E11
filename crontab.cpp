@@ -26,6 +26,7 @@ int main(int argc, char **argv){
     // if (sid < 0) {
     //     exit(EXIT_FAILURE);
     // }
+    resetFlag = 1;
     pthread_create(&prosesThreads[0], NULL, runCrontab, NULL);
     pthread_create(&prosesThreads[1], NULL, runSchedule, NULL);
     pthread_join(prosesThreads[0], NULL);
