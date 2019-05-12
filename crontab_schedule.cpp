@@ -17,7 +17,7 @@ void* runAJob(void *arg){
     time_t t = time(0);
     struct tm *now = localtime(&t);
     bool isTheTime = false;
-    printf("line : %d %d %d %d %d %s\n", now->tm_min, now->tm_hour, now->tm_mday, now->tm_wday, now->tm_mon, job->command);
+    // printf("line : %d %d %d %d %d %s\n", now->tm_min, now->tm_hour, now->tm_mday, now->tm_wday, now->tm_mon, job->command);
 
     if(job->month==-1 || job->month == now->tm_mon){
         if(job->mday == -1 || job->mday == now->tm_mday){
@@ -52,7 +52,7 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
 
 
 void resetAll(){
-    printf("reset all\n");
+    // printf("reset all\n");
     pthread_mutex_lock(&mutex2);
     resetFlag = 1;                             // enable resetFlag so that the scheduling threads can be terminated
     for(int i=0; i<numJobs; i++){
