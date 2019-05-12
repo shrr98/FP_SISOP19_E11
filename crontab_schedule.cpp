@@ -37,7 +37,6 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
     return NULL;
 }
 
-
 void resetAll(){
     pthread_mutex_lock(&mutex2);
     resetFlag = 1;                             // enable resetFlag so that the scheduling threads can be terminated
