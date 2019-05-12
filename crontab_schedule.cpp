@@ -43,9 +43,8 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
         for(int index=0; index<numJobs; index++){
             indlist[index] = index;
             pthread_create(&thread[index], NULL, runAJob, &indlist[index]);
-            usleep(10);
         }
-        timer(60);
+        sleep(60);
     }
     return NULL;
 }
@@ -91,7 +90,7 @@ void startSchedule(){
 int modifiedChecker(){
     // printf("masuk cek\n");
     FILE *pipe;
-    char command[] = "find . -name \"crontab.data\" -mmin -0.167";    // check wherher crontab.data has been modifiend for last 1 second (approx 0.66 minutes)
+    char command[] = "find . -name \"crontab.data\" -mmin -0.0167";    // check wherher crontab.data has been modifiend for last 1 second (approx 0.66 minutes)
     char buffer[64]; 
     memset(buffer, 0, sizeof(buffer));
     pipe = popen(command, "r");
@@ -116,7 +115,7 @@ void* runCrontab(void *arg){
             startSchedule();
             pthread_mutex_unlock(&mutex1);
        }
-        timer(1);
+        sleep(1);
     }
 }
 
