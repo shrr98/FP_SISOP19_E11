@@ -19,7 +19,7 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
     int min, hour, daym, month, dayw;
     char m[3], h[3], d[3], mo[3], dw[2];
     char program_path[512];
-    time_t current_time = time(NULL);
+    time_t current_time;
     struct tm *now;
     bool isTheTime;                            // True if now is time scheduled
 
@@ -37,6 +37,7 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
         printf("--- masuk while runschedule %s\n" , program_path);
         isTheTime = false;
         // cek dulu tapi masih magerr
+        current_time = time(NULL);
         now = localtime(&current_time);
         if(month==-1 || month == now->tm_mon){
             if(daym == -1 || daym == now->tm_mday){
@@ -51,30 +52,25 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
         }
     pthread_mutex_unlock(&mutex1[index]);
 
-        // pid_t proses = fork();
-        // printf("proses : %d\n", proses);
-        // if(proses==0){
-        //     if(!isTheTime){
-        //             return 0;
-        //     }
-        //     else{
-        //             printf("child : %s\n", program_path);
-        //             char *args[] = {"bash", program_path, NULL};
-        //             execv("/bin/bash", args);
-        //     }
-        // }
-        // if(proses>0){
-            // pthread_mutex_lock(&mutex1);
-            // if(isTheTime)
-            //     system(program_path);
-                
-            // pthread_mutex_unlock(&mutex1);
+        pid_t proses = fork();
+        printf("proses : %d\n", proses);
+        if(proses==0){
+            if(!isTheTime){
+                    return 0;
+            }
+            else{
+                    printf("child : %s\n", program_path);
+                    char *args[] = {"bash", program_path, NULL};
+                    execv("/bin/bash", args);
+            }
+        }
+        if(proses>0){
             printf("masuk parent process\n");
             int statp = 0;
             while(wait(&statp) > 0);
             timer(60);
             printf("--------childs mati kabeh\n");
-        // }
+        }
     }
     return NULL;
 }
@@ -85,7 +81,7 @@ void resetAll(){
     pthread_mutex_lock(&mutex2);
     resetFlag = 1;              
     pthread_mutex_unlock(&mutex2);                                // enable resetFlag so that the scheduling threads can be terminated
-    for(int i=0; prosesThreads[i]!=NULLTHREAD; i++){
+    for(int i=1; prosesThreads[i]!=NULLTHREAD; i++){
         pthread_cancel(prosesThreads[i]);
         pthread_join(prosesThreads[i], NULL);                   // waiting for all threads' termination
         prosesThreads[i] = NULLTHREAD;
