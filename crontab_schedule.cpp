@@ -17,7 +17,6 @@ void* runAJob(void *arg){
     time_t t = time(0);
     struct tm *now = localtime(&t);
     bool isTheTime = false;
-    // printf("line : %d %d %d %d %d %s\n", now->tm_min, now->tm_hour, now->tm_mday, now->tm_wday, now->tm_mon, job->command);
 
     if(job->month==-1 || job->month == now->tm_mon){
         if(job->mday == -1 || job->mday == now->tm_mday){
@@ -37,7 +36,6 @@ void* runAJob(void *arg){
 
 void* runSchedule(void *arg){       // argument passed here is a line in crontab.data
     while(true){
-        printf("---masuk while runSchedule\n");
         while(resetFlag);
         pthread_t thread[numJobs];
         int indlist[numJobs];
@@ -52,7 +50,6 @@ void* runSchedule(void *arg){       // argument passed here is a line in crontab
 
 
 void resetAll(){
-    // printf("reset all\n");
     pthread_mutex_lock(&mutex2);
     resetFlag = 1;                             // enable resetFlag so that the scheduling threads can be terminated
     for(int i=0; i<numJobs; i++){
@@ -66,7 +63,6 @@ void startSchedule(){
     char filename[128];
     sprintf(filename, "%scrontab.data", dir);
 
-    // printf("MASUK START SCHEDULE\n%s\n", filename);
     FILE *crontabData = fopen(filename, "r");
     char m[3], h[3], d[3], mo[3], dw[2];
     char program_path[256];
@@ -79,7 +75,6 @@ void startSchedule(){
         cronJobs[index].wday = dw[0]=='*' ? -1 : atoi(dw);
         cronJobs[index].month = mo[0]=='*' ? -1 : atoi(mo)-1;
         strcpy(cronJobs[index].command, buffer);
-        // printf("%d. %s\n", index, buffer);
         index++;
     }
     numJobs = index;
