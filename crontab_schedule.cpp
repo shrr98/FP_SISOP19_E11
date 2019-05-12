@@ -88,7 +88,6 @@ void startSchedule(){
 }
 
 int modifiedChecker(){
-    // printf("masuk cek\n");
     FILE *pipe;
     char command[] = "find . -name \"crontab.data\" -mmin -0.0167";    // check wherher crontab.data has been modifiend for last 1 second (approx 0.66 minutes)
     char buffer[64]; 
@@ -103,12 +102,10 @@ int modifiedChecker(){
 }
 
 void* runCrontab(void *arg){
-    // printf("masuk run\n");
     pthread_mutex_lock(&mutex1);
     startSchedule();
     pthread_mutex_unlock(&mutex1);
     while(1){
-        // printf("masuk while program utama\n");
        if(modifiedChecker()&& !resetFlag){
             pthread_mutex_lock(&mutex1);
             resetAll();
