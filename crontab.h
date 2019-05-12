@@ -18,11 +18,6 @@
 #define MAXPROSES       1000
 #define NULLTHREAD      0
 
-typedef struct {
-    int index;
-    char *line;
-} ThreadArgs;
-
 struct cj{
     int min, hour, mday, wday, month;
     char command[256];

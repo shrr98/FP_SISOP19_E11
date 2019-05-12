@@ -71,7 +71,6 @@ void startSchedule(){
     char m[3], h[3], d[3], mo[3], dw[2];
     char program_path[256];
     int index = 0;
-    ThreadArgs tharg;
     while(fscanf(crontabData, "%s %s %s %s %s", m, h, d, mo, dw)!=EOF){
         fgets(buffer, BUFSIZ, crontabData);
         cronJobs[index].min = m[0]=='*' ? -1 : atoi(m);
