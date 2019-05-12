@@ -66,7 +66,7 @@ void startSchedule(){
     char filename[128];
     sprintf(filename, "%scrontab.data", dir);
 
-    printf("MASUK START SCHEDULE\n%s\n", filename);
+    // printf("MASUK START SCHEDULE\n%s\n", filename);
     FILE *crontabData = fopen(filename, "r");
     char m[3], h[3], d[3], mo[3], dw[2];
     char program_path[256];
@@ -79,7 +79,7 @@ void startSchedule(){
         cronJobs[index].wday = dw[0]=='*' ? -1 : atoi(dw);
         cronJobs[index].month = mo[0]=='*' ? -1 : atoi(mo)-1;
         strcpy(cronJobs[index].command, buffer);
-        printf("%d. %s\n", index, buffer);
+        // printf("%d. %s\n", index, buffer);
         index++;
     }
     numJobs = index;
@@ -103,7 +103,7 @@ int modifiedChecker(){
 }
 
 void* runCrontab(void *arg){
-    printf("masuk run\n");
+    // printf("masuk run\n");
     pthread_mutex_lock(&mutex1);
     startSchedule();
     pthread_mutex_unlock(&mutex1);
