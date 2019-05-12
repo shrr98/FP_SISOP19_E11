@@ -1,13 +1,11 @@
 #include "crontab.h"
 
 void timer(int sec){
-    // printf("%d sekon\n", sec);
     clock_t start = clock();
     int runtime = 0;
     while(!resetFlag && runtime < sec){
         runtime = (clock() - start) / CLOCKS_PER_SEC;
     }
-    // printf("ngesleep : %d\n", runtime);
     return;
 }
 
