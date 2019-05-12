@@ -1,2 +1,3 @@
 * * * * * /home/trash/Documents/test.sh
-* 8 * * * /home/trash/Documents/cat.sh
+* * * * * /home/trash/Documents/cat.sh
+* * * * * echo 'wahahaha' >> /home/trash/Documents/waha.txt
