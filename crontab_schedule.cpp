@@ -1,13 +1,13 @@
 #include "crontab.h"
 
-void timer(int sec){
-    clock_t start = clock();
-    int runtime = 0;
-    while(!resetFlag && runtime < sec){
-        runtime = (clock() - start) / CLOCKS_PER_SEC;
-    }
-    return;
-}
+// void timer(int sec){
+//     clock_t start = clock();
+//     int runtime = 0;
+//     while(!resetFlag && runtime < sec){
+//         runtime = (clock() - start) / CLOCKS_PER_SEC;
+//     }
+//     return;
+// }
 
 void* runAJob(void *arg){
     int index = *(int*)(arg);
